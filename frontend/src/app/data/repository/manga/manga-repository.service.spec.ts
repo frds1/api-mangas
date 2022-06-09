@@ -1,27 +1,41 @@
 import { MangaRepositoryService } from "./manga-repository.service";
-import { HttpTestingController, HttpClientTestingModule, TestRequest } from '@angular/common/http/testing';
+import { HttpTestingController, HttpClientTestingModule, TestRequest, } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { HttpClient } from "@angular/common/http";
+import { MangaEntity } from "src/app/domain/entities/manga/manga-entity";
 import { environment } from "src/environments/environment";
 
 describe('MangaRepositoryService', () => {
   let service: MangaRepositoryService;
-  let httpClient: HttpClient;
-  let backend: HttpTestingController;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    service = new MangaRepositoryService(httpClient)
-  })
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    });
+    httpTestingController = TestBed.get(HttpTestingController);
+    service = TestBed.get(MangaRepositoryService);
+  });
 
-  it('deve ser criado', () => {
+  it('should create service', () => {
     expect(service).toBeTruthy();
   });
 
-  it('deve realizar requisicao para obter um registro de manga', () => {
-    service.get(1).subscribe()
-    const req = backend.expectOne(environment.serverUrl + '/manga/1')
-    console.log('req ->', req);
-    expect(req.request.method).toBe('GET')
-    backend.verify();
+  it('should return expected manga by index', (done) => {
+    const expectedData: MangaEntity = {
+      name: 'One piece',
+      pages: 2000
+    };
+
+    service.get(1).subscribe(data => {
+      expect(data).toEqual(expectedData);
+      done();
+    });
+
+    const testRequest = httpTestingController.expectOne(`${environment.serverUrl}/mangas/1`);
+    testRequest.flush(expectedData);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
   });
 });

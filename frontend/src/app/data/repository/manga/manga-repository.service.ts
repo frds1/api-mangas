@@ -3,7 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { MangaEntity } from "src/app/domain/entities/manga/manga-entity";
 import { environment } from "src/environments/environment";
+import { Injectable } from "@angular/core";
 
+@Injectable({
+  providedIn: 'root'
+})
 export class MangaRepositoryService implements IMangaRepository {
   constructor(private http: HttpClient) {}
 
