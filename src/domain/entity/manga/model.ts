@@ -1,17 +1,13 @@
 export class Manga {
-    id: number
-    titulo: string
-    descricao: string
-    autor_id: number
-    genero_id: number
-    editora_id: number
+  title: string
+  author_id: number
+  demography: string
+  publish_company: number
 
-    constructor (id: number, titulo: string, descricao: string, autor_id: number, genero_id: number, editora_id: number) {
-        this.id = id
-        this.titulo = titulo
-        this.descricao = descricao
-        this.autor_id = autor_id
-        this.genero_id = genero_id
-        this.editora_id = editora_id
-      }
+  constructor (title: string, author_id: number, demography: string, publish_company: number) {
+    this.title = title;
+    this.author_id = author_id;
+    this.demography = demography;
+    this.publish_company = publish_company;
+  }
 }
