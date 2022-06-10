@@ -11,5 +11,8 @@ export class AppComponent implements OnInit {
 
   constructor(private manga: MangaRepositoryService){}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.manga.get(1)
+      .subscribe(() => {})
+  }
 }
