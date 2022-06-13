@@ -16,13 +16,12 @@ export class HttpInterceptorService implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.authService.credentials) {
+    if (this.authService.credentials.token) {
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${this.authService.credentials.token}`
         }
       });
-
       return next.handle(req).pipe(catchError(error => this.errorHandler(error)));
     } else {
       return next.handle(req).pipe(catchError(error => this.errorHandler(error)));

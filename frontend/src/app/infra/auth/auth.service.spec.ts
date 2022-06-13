@@ -7,6 +7,13 @@ const credentialsKey = 'credentials';
 describe('AuthService', () => {
   let authService: AuthService;
 
+  const usuario = {
+    id: 1,
+    username: 'test',
+    email: 'test@test.com.br',
+    token: '123'
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [AuthService]
@@ -21,29 +28,13 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return credentials', () => {
-      const usuario = {
-        id: 1,
-        username: 'test',
-        email: 'test@test.com.br',
-        token: '123'
-      };
-
       authService.credentials = usuario;
-
       expect(authService.credentials).toBeDefined();
       expect(authService.credentials.token).toBeDefined();
     });
 
     it('should auth a user', () => {
-      const usuario = {
-        id: 1,
-        username: 'test',
-        email: 'test@test.com.br',
-        token: '123'
-      };
-
       authService.credentials = usuario;
-
       expect(authService.isAuthenticated()).toBe(true);
     });
   });

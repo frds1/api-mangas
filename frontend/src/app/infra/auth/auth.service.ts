@@ -7,15 +7,10 @@ const credentialsKey = 'credentials';
   providedIn: 'root'
 })
 export class AuthService {
-
   private usuario!: UserEntity;
 
   constructor() {
-    const savedCredentials = localStorage.getItem(credentialsKey);
-
-    if (savedCredentials) {
-      this.usuario = JSON.parse(savedCredentials);
-    }
+    this.usuario = JSON.parse(localStorage.getItem(credentialsKey) || '{}');
   }
 
   isAuthenticated(): boolean {
@@ -27,12 +22,10 @@ export class AuthService {
   }
 
   set credentials(credentials: UserEntity) {
-    this.usuario = credentials || null;
+    this.usuario = credentials;
 
     if (credentials) {
       localStorage.setItem(credentialsKey, JSON.stringify(credentials));
-    } else {
-      localStorage.removeItem(credentialsKey);
     }
   }
 }
