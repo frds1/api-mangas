@@ -31,6 +31,8 @@
     "jest": "^28.1.1",
     "morgan": "^1.10.0",
     "morgan-body": "^2.6.6",
-    "pg-promise": "^10.11.1"
+    "pg-promise": "^10.11.1",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.4.0"
   }
 }

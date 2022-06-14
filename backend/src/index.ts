@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import router from "./interfaces/router";
 import morganBody from "morgan-body";
+const swaggerJsDocs = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
 
 const http = require("http");
@@ -20,19 +22,36 @@ morganBody(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const swaggerOptions = {
+  swagger: "2.0",
+  swaggerDefinition: {
+    info: {
+      title: "Library API Mangás",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: "http://localhost:4000/api",
+        description: "Development server",
+      },
+      {
+        url: "https://api-mangas-1.herokuapp.com/api",
+        description: "Production server",
+      },
+    ],
+  },
+  apis: ['./interface/**/*.ts'],
+};
+
 app.use("/api", router);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerJsDocs(swaggerOptions))
+);
 
 app.use((req, res, next) => {
   res.status(404).send("Rota não encontrada.");
-});
-
-app.use((error: any, req: any, res: any, next: any) => {
-  res.status(error.status || 500);
-  return res.json({
-    error: {
-      message: error.message || "Erro interno do servidor",
-    },
-  });
 });
 
 http.createServer(app).listen(PORT, () => {

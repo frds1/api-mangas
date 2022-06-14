@@ -4,6 +4,15 @@ import { MangaRepository } from "../../infrastructure/mangas/data";
 const router = express.Router();
 const mangaRepository = new Mangas(new MangaRepository());
 
+/**
+ * @swagger
+ * /manga/:
+ *  get:
+ *   description: Retorna todos os mangás
+ *  responses:
+ *   '200':
+ *    description: Success
+ */
 router.get("/", async (_, res, next) => {
   try {
     res.json(await mangaRepository.getAllMangas());
