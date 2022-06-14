@@ -1,10 +1,12 @@
 import express from "express";
-const mangaApp = require('../../app/mangas/app');
+import { Mangas } from "../../app/manga/app";
+import { MangaRepository } from "../../infrastructure/mangas/data";
 const router = express.Router();
+const mangaRepository = new Mangas(new MangaRepository());
 
 router.get("/", async (_, res, next) => {
   try {
-    res.json(await mangaApp.getMangas());
+    res.json(await mangaRepository.getAllMangas());
   } catch (err) {
     next(err);
   }
@@ -12,37 +14,37 @@ router.get("/", async (_, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    res.json(await mangaApp.createManga(req.body));
+    res.json(await mangaRepository.createManga(req.body));
   } catch (err) {
     next(err);
   }
 });
-  
+
 router.get("/:id", async (req, res, next) => {
   try {
-  const id: number = +req.params.id;
-  res.json(await mangaApp.getManga(id));
-} catch (err) {
-  next(err);
-}
-});
-  
-router.put("/:id", async (req, res, next) => {
-  try  {
     const id: number = +req.params.id;
-    res.json(await mangaApp.updateManga(id, req.body));
+    res.json(await mangaRepository.getManga(id));
   } catch (err) {
     next(err);
   }
 });
- 
+
+router.put("/:id", async (req, res, next) => {
+  try {
+    const id: number = +req.params.id;
+    res.json(await mangaRepository.updateManga(id, req.body));
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.delete("/:id", async (req, res, next) => {
-try {
-  const id: number = +req.params.id;
-  res.json(await mangaApp.deleteManga(id));
-} catch (err) {
-  next(err);
-}
+  try {
+    const id: number = +req.params.id;
+    res.json(await mangaRepository.deleteManga(id));
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;
