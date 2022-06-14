@@ -1,41 +1,68 @@
-const database = require('../../config/database/database');
+const database = require("../../config/database/database");
+import { IMangaRepository } from "../../domain/repository/MangaRepository";
+import { Manga } from "../../domain/entity/manga/model";
 
-exports.getMangas = async () => {
-    try {
-        return database.query('select * from public.manga');
-    } catch (error) {
-        return console.log("Erro ao buscar os mangás: "+error);
-    }
-};
+export class MangaRepository implements IMangaRepository {
+  constructor() {}
 
-exports.getManga = async (idManga:number) => {
-    try {
-        return database.query('select * from public.manga where id = $1', [idManga]);
-    } catch (error) {
-        return console.log("Erro ao buscar o mangá de id "+idManga+": "+error);
+  public async getAllMangas(): Promise<Manga[]> {
+    const mangasData = await database.query(
+      "SELECT TM.id, TM.titulo AS title, TM.autor_id AS author_id, TM.editora_id AS publish_company, TM.demografia AS demography FROM public.manga TM",
+      []
+    );
+    const mangas: Manga[] = [];
+    for (const mangaData of mangasData) {
+      mangas.push(
+        new Manga(
+          mangaData.id,
+          mangaData.title,
+          mangaData.author_id,
+          mangaData.publish_company,
+          mangaData.demography
+        )
+      );
     }
-}
+    return mangas;
+  }
 
-exports.createManga = async (manga:any) => {
-    try {
-        return database.query('insert into public.manga (titulo, autor_id, editora_id, demografia) values ($1, $2, $3, $4)', [manga.title, manga.author, manga.publish_company, manga.demography]);
-    } catch (error) {
-        return console.log("Erro ao criar o mangá: "+error);
-    }
-}
+  public async getManga(idManga: number): Promise<Manga> {
+    const mangaData = await database.query(
+      "SELECT TM.id, TM.titulo AS title, TM.autor_id AS author_id, TM.editora_id AS publish_company, TM.demografia AS demography FROM public.manga TM WHERE id = $1",
+      [idManga]
+    );
+    return new Manga(
+      mangaData[0].id,
+      mangaData[0].title,
+      mangaData[0].author_id,
+      mangaData[0].publish_company,
+      mangaData[0].demography
+    );
+  }
 
-exports.updateManga = async (idManga:number, manga:any) => {
-    try {
-        return database.query('update public.manga set titulo = $1, autor_id = $2, editora_id = $3, demografia = $4 where id = $5', [manga.title, manga.author, manga.publish_company, manga.demography, idManga]);
-    } catch (error) {
-        return console.log("Erro ao atualizar o mangá: "+error);
-    }
-}
+  public async createManga(manga: Manga): Promise<void> {
+    return await database.query(
+      "INSERT INTO public.manga (title, author_id, publish_company, demography) VALUES ($1, $2, $3, $4)",
+      [manga.id]
+    );
+  }
 
-exports.deleteManga = async (idManga:number) => {
-    try {
-        return database.query('update public.manga set data_remocao = NOW() where id = $1', [idManga]);
-    } catch (error) {
-        return console.log("Erro ao deletar o mangá: "+error);
-    }
+  public async updateManga(idManga: number, manga: Manga): Promise<void> {
+    return await database.query(
+      "UPDATE public.manga SET title = $1, author_id = $2, publish_company = $3, demography = $4 WHERE id = $5",
+      [
+        manga.title,
+        manga.author_id,
+        manga.publish_company,
+        manga.demography,
+        idManga,
+      ]
+    );
+  }
+
+  public async deleteManga(idManga: number): Promise<void> {
+    return await database.query(
+      "DELETE FROM public.manga WHERE id = $1 RETURNING id",
+      [idManga]
+    );
+  }
 }
